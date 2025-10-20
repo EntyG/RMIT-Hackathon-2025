@@ -1,0 +1,226 @@
+body, html {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f7f2;
+    color: #333;
+    margin: 0;
+    overflow: hidden;
+    height: 100%;
+
+    background-image: url('assets/background.png');
+    background-size: cover;
+    background-position: center; /* This centers the image */
+    background-repeat: no-repeat;
+}
+
+#event-animation-modal .event-modal-content {
+    background-color: #fffde7;
+    border: 3px solid #fbc02d;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 450px;
+    
+    /* ADD/UPDATE THESE LINES TO MAKE IT SQUARE */
+    aspect-ratio: 1 / 1; /* Force a square shape */
+    display: flex; /* Use flexbox to easily arrange content inside */
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    
+    animation-duration: 3.5s;
+    animation-fill-mode: forwards;
+}
+
+/* You might also want to adjust the image height slightly */
+#event-animation-modal img {
+    width: 100%;
+    /* max-height: 200px; */ /* REMOVE or adjust this line */
+    height: 100%; /* Let the image take up about half the space */
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}   
+
+#event-animation-modal h2 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+#event-animation-modal p {
+    margin: 0;
+    font-size: 16px;
+    color: #555;
+}
+
+/* NEW: Animation Keyframes */
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: scale(0.7); }
+    20% { opacity: 1; transform: scale(1); }
+    80% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.7); }
+}
+
+.screen {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.screen.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Home Screen Specific */
+#home-screen .panel { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; width: 420px; }
+#home-screen .home-buttons { display: flex; flex-direction: column; gap: 12px; margin-top: 18px; }
+#home-screen .home-buttons button { background-color: #4CAF50; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; transition: background-color 0.2s; }
+#home-screen .home-buttons button:hover { background-color: #45a049; }
+
+/* --- Menu Screen Styling --- */
+#menu-screen .panel { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; width: 400px; }
+#menu-screen h1 { color: #2c6b2f; margin-top: 0; }
+.difficulty-selection { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+#menu-screen button { background-color: #4CAF50; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; width: 100%; transition: background-color 0.3s; }
+#menu-screen button:hover { background-color: #45a049; }
+
+/* --- UPDATED: Game Screen Layout --- */
+#game-screen {
+    padding: 20px;
+    box-sizing: border-box;
+    align-items: stretch;
+    gap: 20px;
+}
+
+/* NEW: Container for the board to handle flexible sizing and centering */
+#board-container {
+    flex-grow: 1; /* This makes it take up all available horizontal space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 0; /* Important for flex items to shrink properly */
+}
+
+/* UPDATED: New rules for a responsive, square game board */
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    
+    /* Make the board as tall as its container, but no wider */
+    height: 100%;
+    max-width: 100%;
+    
+    /* This is the key: force a 1:1 aspect ratio */
+    aspect-ratio: 1 / 1; 
+
+    gap: 5px;
+    background-color: #a5d6a7;
+    border: 5px solid #388e3c;
+    padding: 5px;
+}
+
+/* --- Tile Styles --- */
+.tile { position: relative; background-color: #c8e6c9; cursor: pointer; transition: all 0.2s; background-size: cover; background-position: center; image-rendering: pixelated; overflow: hidden; }
+.tile.selected { outline: 3px solid #fbc02d; transform: scale(1.05); z-index: 10; }
+.tile.protected::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(46, 125, 50, 0.3); border: 1px solid rgba(251, 192, 45, 0.5); box-sizing: border-box; }
+.tile.empty { background-image: url('assets/empty.png'); }
+.tile.community-house { background-image: url('assets/house.png'); }
+.tile.rice { background-image: url('assets/rice.png'); }
+.tile.orchard { background-image: url('assets/orchard.png'); }
+.tile.mangrove { background-image: url('assets/mangrove.png'); }
+
+.health-bar { position: absolute; bottom: 5px; left: 10%; width: 80%; height: 8px; background-color: rgba(0, 0, 0, 0.5); border-radius: 4px; border: 1px solid #fff; }
+.health-bar-inner { height: 100%; background-color: #4CAF50; border-radius: 4px; transition: width 0.3s ease-in-out; }
+.tile-health-text { position: absolute; top: 5px; right: 5px; background-color: rgba(0, 0, 0, 0.6); color: white; padding: 2px 5px; font-size: 12px; font-weight: bold; border-radius: 3px; z-index: 5; }
+
+/* --- Dashboard Styles --- */
+#dashboard { width: 380px; /* Slightly wider for comfort */ flex-shrink: 0; background: white; padding: 10px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+.stat-item { margin-bottom: 20px; }
+.stat-item p { margin: 5px 0 8px; font-size: 16px; color: #555; }
+.progress-bar { background-color: #e0e0e0; border-radius: 5px; overflow: hidden; height: 20px; }
+.progress-bar div { height: 100%; transition: width 0.5s ease-in-out; }
+#salinity-bar { background-color: #f44336; }
+#treasury-bar { background-color: #ffc107; }
+
+#actions button, #end-turn-button { width: 100%; padding: 10px; margin-bottom: 5px; border: 1px solid #ddd; background-color: #f9f9f9; cursor: pointer; border-radius: 5px; }
+#reduce-salinity-button { background-color: #e3f2fd; color: #0d47a1; font-weight: bold; }
+#reduce-salinity-button:hover { background-color: #bbdefb; }
+#event-card { margin-top: 0px; background: #fffde7; border: 1px solid #fff59d; padding: 15px; border-radius: 5px; }
+
+/* --- Modal Styles --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+/* UPDATED: Modal content now uses Flexbox to manage its children */
+.modal-content {
+    background-color: white;
+    padding: 20px 30px; /* Adjusted padding */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 600px; /* Slightly wider for better readability */
+    
+    /* These are the key new properties */
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh; /* Limit the modal's height to 85% of the screen */
+}
+
+/* NEW: Style for the scrollable body */
+.modal-body {
+    overflow-y: auto; /* This adds the scrollbar ONLY when needed */
+    margin: 15px 0; /* Creates space between title/button */
+    padding-right: 15px; /* Adds space for the scrollbar so it doesn't overlap text */
+    text-align: left;
+}
+
+/* UPDATED: No need for margins on these elements now */
+.modal-content h2 {
+    margin: 0;
+    text-align: center;
+}
+.modal-content button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    flex-shrink: 0; /* Prevents the button from shrinking */
+}
+
+/* Minor tweaks for better list formatting inside the modal */
+.modal-body ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+.modal-body ul li {
+    margin-bottom: 10px;
+}
+.modal-body ul ul {
+    margin-top: 5px;
+}
+
+/* Intro video overlay should fill the screen */
+#intro-video-overlay { background-color: rgba(0,0,0,0.95); }
+#intro-video-overlay .modal-content { display: block; width: 100%; height: 100%; max-width: none; max-height: none; padding: 0; }
+#intro-video { width: 100%; height: 100%; object-fit: cover; background: black; }
+#skip-intro { font-weight: bold; }

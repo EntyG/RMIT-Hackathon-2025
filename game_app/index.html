@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delta Guardians</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Home Screen -->
+    <div id="home-screen" class="screen active">
+        <div class="panel">
+            <h1>Delta Guardians</h1>
+            <p>Welcome! Choose an option:</p>
+            <div class="home-buttons">
+                <button id="start-game-button">Start Game</button>
+                <button id="settings-button">Settings</button>
+                <button id="how-to-play-button">How to Play</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Intro Video Overlay -->
+    <div id="intro-video-overlay" class="modal">
+        <div class="modal-content" style="max-width: none; width: 100%; height: 100%; background: transparent; box-shadow: none; border-radius: 0; padding: 0; display:flex; align-items:center; justify-content:center;">
+            <video id="intro-video" width="100%" height="100%" preload="auto">
+                <source src="assets/intro.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div style="position:absolute; top:16px; right:16px; z-index:1100;">
+                <button id="skip-intro" style="padding:8px 12px; border-radius:6px; border:none; background:#4CAF50; color:white; cursor:pointer;">Skip</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Screen (Difficulty Selection) -->
+    <div id="menu-screen" class="screen">
+        <div class="panel">
+            <h2>Choose your challenge:</h2>
+            <div class="difficulty-selection">
+                <button class="difficulty-btn" data-difficulty="easy">Easy (Goal: 10,000 VND)</button>
+                <button class="difficulty-btn" data-difficulty="medium">Medium (Goal: 15,000 VND)</button>
+                <button class="difficulty-btn" data-difficulty="hard">Hard (Goal: 20,000 VND)</button>
+            </div>
+            <button id="back-to-home-button">Back</button>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen">
+        <div id="board-container">
+            <div id="game-board"></div>
+        </div>
+        <div id="dashboard">
+             <h2 style="margin-top: -10px;">Year: <span id="year-stat">1</span></h2>
+             <div style="margin-top: -25px;" id="stats">
+                 <div class="stat-item">
+                    <h3>💰 Treasury</h3>
+                    <p style="margin-top: -10px;" id="treasury-stat-text">1,000 / 10,000 VND</p>
+                    <div class="progress-bar"><div id="treasury-bar"></div></div>
+                 </div>
+                 <div class="stat-item">
+                    <h3>💧 Salinity</h3>
+                    <p style="margin-top: -10px;" id="salinity-stat-text">5 / 100</p>
+                    <div class="progress-bar"><div id="salinity-bar"></div></div>
+                 </div>
+             </div>
+             <div style="margin-top: -20px;" id="actions">
+                 <h3>Build Actions</h3>
+                 <button class="action-btn" data-action="rice">Plant Rice Paddy (100 VND)</button>
+                 <button class="action-btn" data-action="orchard">Plant Orchard (200 VND)</button>
+                 <button class="action-btn" data-action="mangrove">Plant Mangroves (150 VND)</button>
+                 <h3 style="margin-top: 10px;">Special Actions</h3>
+                 <button id="reduce-salinity-button">Purify Water (500 VND)</button>
+             </div>
+             <div id="event-card"><h3 style="margin-top: -10px;">Last Event</h3><p style="margin-bottom: 0px;" id="event-text">The year begins peacefully.</p></div>
+             <button style="margin-top: 5px;" id="end-turn-button">End Year</button>
+        </div>
+    </div>
+
+
+    <div id="event-animation-modal" class="modal">
+    <div class="event-modal-content">
+        <img id="event-image" src="" alt="Event Image">
+        <h2 id="event-title">Event Title</h2>
+        <p id="event-description">Event Description</p>
+    </div>
+</div>
+
+    <!-- Modals -->
+<div id="how-to-play-modal" class="modal">
+        <div class="modal-content">
+            <h2>How to Play</h2>
+            
+            <div class="modal-body">
+                <h4>Objective</h4>
+                <p>Your goal is to reach the target Treasury amount by the end of Year 20. Plan your farm wisely to maximize your income while surviving the effects of climate change.</p>
+
+                <h4>The Plants</h4>
+                <ul>
+                    <li><strong>🌾 Rice Paddy:</strong> A reliable staple crop.
+                        <ul>
+                            <li>Cost: 100 VND</li>
+                            <li>Health: 100 / 100</li>
+                            <li>Base Production: 200 VND/year</li>
+                        </ul>
+                    </li>
+                    <li><strong>🍎 Fruit Orchard:</strong> A high-risk, high-reward cash crop. It produces a massive income but is very fragile.
+                        <ul>
+                            <li>Cost: 200 VND</li>
+                            <li>Health: 50 / 50</li>
+                            <li>Base Production: 500 VND/year</li>
+                        </ul>
+                    </li>
+                    <li><strong>🌳 Mangrove Forest:</strong> Your shield against disaster. It produces no income but is vital for survival.
+                        <ul>
+                            <li>Cost: 150 VND</li>
+                            <li>Health: 150 / 150</li>
+                            <li><strong>Special:</strong> Immune to salinity damage and protects all tiles in a 3x3 square around itself.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4>The Threat: Salinity</h4>
+                <p>Each year, the salinity of the water rises. This damages your crops and reduces their income.</p>
+                <ul>
+                    <li><strong>Damage Calculation:</strong> A plant's health is reduced each year based on the global salinity level.</li>
+                    <li><strong>Unprotected Plants:</strong> Take damage equal to the <strong>full Salinity value</strong>.</li>
+                    <li><strong>Protected Plants:</strong> (Near a mangrove) Take damage equal to <strong>half the Salinity value</strong>.</li>
+                    <li>A plant is destroyed if its health reaches 0!</li>
+                </ul>
+
+                <!-- NEW SECTION -->
+                <h4>Yearly Events</h4>
+                <p>At the start of each year, a random event will occur. These can be helpful, harmful, or change the environmental conditions. Be prepared for anything!</p>
+                <ul>
+                    <li>A <strong>positive event</strong> like a <strong>Government Subsidy</strong> might give you a direct cash injection.</li>
+                    <li>A <strong>harmful event</strong> like a <strong>Coastal Flood</strong> could damage all crops in a specific area of your farm.</li>
+                    <li>Some rare, dangerous events like an <strong>Infestation</strong> or <strong>Ocean Acidification</strong> can even damage your powerful Mangroves, threatening your defenses!</li>
+                </ul>
+
+            </div>
+            
+            <button id="close-how-to-play">Got It!</button>
+        </div>
+    </div>
+    <div id="game-over-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="game-over-title">Game Over</h2><p id="game-over-message">You survived!</p><button id="play-again-button">Play Again</button>
+        </div>
+    </div>
+
+    <!-- REMOVED: The tooltip div is no longer needed -->
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <h2>Settings</h2>
+            <div class="modal-body">
+                <p>Settings placeholder. You can add volume, graphics, or other options here.</p>
+            </div>
+            <button id="close-settings">Close</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
