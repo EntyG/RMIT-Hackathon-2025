@@ -228,7 +228,7 @@ const events = [
 
         for (const tile of gameState.board.flat()) {
             if (tile.health > 0 && tile.production > 0) {
-                income += tile.production * (tile.health / 100);
+                income += tile.production * (tile.health / tile.maxHealth);
             }
         }
         
