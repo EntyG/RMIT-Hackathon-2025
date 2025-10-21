@@ -228,7 +228,7 @@ const events = [
 
         for (const tile of gameState.board.flat()) {
             if (tile.health > 0 && tile.production > 0) {
-                income += tile.production;
+                income += tile.production * (tile.health / 100);
             }
         }
         
@@ -297,7 +297,7 @@ const events = [
         const cost = 500;
         if (gameState.treasury >= cost) {
             gameState.treasury -= cost;
-            gameState.salinity = Math.max(0, Math.round(gameState.salinity/2));
+            gameState.salinity = Math.max(0, gameState.salinity - 5);
             renderStats();
         } else {
             alert("Not enough money to purify the water!");
